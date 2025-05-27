@@ -216,3 +216,55 @@ The purchse for health beauty are fluctuative. And it went down at the end of th
 3. sport leisure
 
 Customer behaviour for this product are quite stable.So make sure to promote it well throught the month
+
+# Task 3
+Calculate the actual delivery time in days for each delivered order
+
+First we need to check the class for the purchase timestamp and the delivery date
+```{r}
+class(orders$order_purchase_timestamp) # it's character
+orders$order_purchase_timestamp=as.POSIXct(orders$order_purchase_timestamp, format= "%Y-%m-%d %H:%M:%S")
+class(orders$order_purchase_timestamp)
+
+class(orders$order_delivered_customer_date) # it's character
+orders$order_delivered_customer_date=as.POSIXct(orders$order_delivered_customer_date, format= "%Y-%m-%d %H:%M:%S")
+class(orders$order_purchase_timestamp)
+```
+Now we filter
+```{r}
+table(orders$order_status) # check status name that exist in the category
+
+# Now we just want the row for "delivered" only
+delivered.order=orders %>%
+  filter(order_status=="delivered") 
+```
+
+Next, see the difference between the purchase time and customer receipt time
+```{r}
+delivered.order$delivery.time.days=as.numeric(difftime(delivered.order$order_delivered_customer_date, 
+                                                       delivered.order$order_purchase_timestamp),
+                                              units="days")
+```
+
+Second thing, we analyze how delivery time varies across different customer states. That means we need to join between customer data and the new delivered.order variabe
+```{r, results='hide'}
+colnames(delivered.order)
+colnames(customer.data)
+cust.delivered=delivered.order%>%
+  inner_join(customer.data, by="customer_id")
+```
+
+Calculate avarage delivery time by state
+```{r}
+avg.delivery.states=aggregate(delivery.time.days~customer_state, data=cust.delivered, mean)
+
+ggplot(data=avg.delivery.states)+
+  geom_col(mapping=aes(x=reorder(customer_state, -delivery.time.days), y=delivery.time.days), fill="steelblue")+
+  coord_flip()+
+  labs(
+    title = "Average Delivery Time by State",
+    x = "Customer State",
+    y = "Average Delivery Time (days)")
+```
+
+From the graph, we found out that SP state got the shortest delivery time. Refers back to the first task, most customers are from SP so we an state a hypothesis that they improve the delivery time in SP because many customers are from there
