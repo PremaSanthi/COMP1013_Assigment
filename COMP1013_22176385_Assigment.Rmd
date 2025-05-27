@@ -54,3 +54,58 @@ sellers.data=read.csv("sellers.csv")
 library(tidyverse)
 library(ggplot2)
 ```
+
+# Task 1
+We are required to analyze the distribution of customers across different states. So in that case we will use customers data.
+
+Use table to count the states from customer_state variable inside customer.data
+```{r}
+state.count=table(customer.data$customer_state)
+```
+
+
+Convert it into data frame. There are 2 reasons why to do so:
+
+1. We can easily read or interpret data in the data frame format
+
+2. To be able to use ggplot, the data should be in data frame
+```{r}
+state.count.df=as.data.frame(state.count)
+colnames(state.count.df)=c("state_name", "count")
+```
+
+Now visualize the data
+```{r}
+ggplot(data=state.count.df)+
+  geom_col(mapping=aes(x=state_name, y=count), fill="dark green")+
+  labs(title="Distribution of customers across different states",
+       y="Number of customers", x="states")+
+  coord_flip()
+```
+
+The graph is messy and hard to understand. Even though we can immediately know the highest is SP, but it is better to read the graph by the order. So:
+```{r}
+## put (reorder) in the x axis
+ggplot(data=state.count.df)+
+  geom_col(mapping=aes(x=reorder(state_name, count), y=count), fill="dark green")+
+  labs(title="Distribution of customers across different states",
+       y="Number of customers", x="States")+
+  coord_flip()
+```
+
+Since there are so many states name in that graph, we filter it into top 5 states with the most customers
+
+```{r}
+state.count.sorted=sort(state.count, decreasing=TRUE) #sort from the highest to the smallest
+top5.states=state.count.sorted[1:5]
+top5.states.df=as.data.frame(top5.states)
+colnames(top5.states.df)=c("states","count")
+
+ggplot(data=top5.states.df)+
+  geom_col(mapping=aes(x=reorder(states, count), y=count), fill="dark green")+
+  labs(title="the top 5 States with the most customers",
+       y="Number of customers", x="states")+
+  coord_flip()
+```
+
+From the graph above, we could see that SP state has the highest customers. It also create a big gap between the top 1 with top 2 (RJ state) which is around $30,000$
