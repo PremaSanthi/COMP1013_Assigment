@@ -268,3 +268,26 @@ ggplot(data=avg.delivery.states)+
 ```
 
 From the graph, we found out that SP state got the shortest delivery time. Refers back to the first task, most customers are from SP so we an state a hypothesis that they improve the delivery time in SP because many customers are from there
+
+# Task 4
+Analyze the usage frequency of different payment types
+
+First, count the payment type and stored it in a data frame
+```{r}
+payment.count=table(payment.data$payment_type)
+payment.sorted=sort(payment.count, decreasing = TRUE)
+payment.df=as.data.frame(payment.sorted)
+colnames(payment.df)=c("payment_type", "count")
+
+
+```
+Next, visualize the data into a bar chart
+```{r}
+ggplot(data=payment.df)+
+  geom_col(mapping=aes(x=reorder(payment_type, count), y=count), fill="magenta")+
+  coord_flip()
+```
+
+The most frequent used payment method is credit card with around 70,000 transactions. This suggest that the customers strongly prefer using credit cards.It is more convenient because people do not need to worry the amount of cash they had at that moment[@kelton2025]. 
+
+According to EBANX[@ebanx], UPI is a payment system that was used in India. However, since this dataset is based in Brazil, we are afraid that there's a mislabeled in the dataset.
