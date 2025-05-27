@@ -1,0 +1,56 @@
+---
+title: "COMP1013_22176385_Assigment"
+output: word_document
+date: "2025-05-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Identity
+
+## Student Surname: Prema Santhi
+
+## Student Firstname: I Gusti Ayu Agung
+
+## Student ID: 22176385
+
+## Unit Name: Analytics Programming
+
+## Unit Number: COMP1013
+
+# Dataset information
+In this assigment, we use several provided datasets such as below:
+
+1. customers.csv
+
+2. geolocation.csv
+
+3. order_items.csv
+
+4. orders.csv
+
+5. payments.csv
+
+6. products.csv
+
+7. sellers.csv
+
+## Load all the dataset
+Before begin to the analysis, load all the data first
+```{r}
+customer.data=read.csv("customers.csv")
+geo.data=read.csv("geolocation.csv")
+item.data=read.csv("order_items.csv")
+orders=read.csv("orders.csv")
+payment.data=read.csv("payments.csv")
+product.data=read.csv("products.csv")
+sellers.data=read.csv("sellers.csv")
+```
+
+## Call the necessery libraries
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+```
