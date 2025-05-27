@@ -109,3 +109,33 @@ ggplot(data=top5.states.df)+
 ```
 
 From the graph above, we could see that SP state has the highest customers. It also create a big gap between the top 1 with top 2 (RJ state) which is around $30,000$
+
+# Task 2
+We assigned to identify the top 3 most frequent product categories based on the number of items sold
+
+First, we need to join product.data and item.data and stored it in a variable
+```{r, results='hide'}
+colnames(item.data)
+colnames(product.data)
+product.item.join=product.data%>%
+  inner_join(item.data, by=c("product_id"))
+```
+Count and convert it into a data frame 
+```{r}
+category.count=table(product.item.join$product.category)
+category.sorted=sort(category.count, decreasing = TRUE)
+top3.category=category.sorted[1:3]
+top3.category.df=as.data.frame(top3.category)
+colnames(top3.category.df)=c("product", "count")
+```
+
+VIsualize using bar chart (geom_col)
+```{r}
+ggplot(data=top3.category.df)+
+  geom_col(mapping=aes(x=reorder(product, count), y=count), fill="orange")+
+  labs(title="the top 3 product",
+       y="Sold", x="product")+
+  coord_flip()
+```
+
+Bassed on the finding, we could see that the customers in Brazil like to buy bed table bath, health beauty, and sport leisure.
