@@ -139,3 +139,80 @@ ggplot(data=top3.category.df)+
 ```
 
 Bassed on the finding, we could see that the customers in Brazil like to buy bed table bath, health beauty, and sport leisure.
+
+Now we will analyze customer behaviour when buying the top 3 category.
+
+First, join the order data, product data, and item data
+```{r, results='hide'}
+colnames(product.data)
+colnames(item.data)
+colnames(orders)
+
+# bed table bath
+ordertime.btb=item.data%>%
+  inner_join(orders, by="order_id")%>%
+  inner_join(product.data, by="product_id")%>%
+  filter(product.category==c("bed table bath"))%>%
+  select(order_purchase_timestamp)
+
+# health beauty
+ordertime.HB=item.data%>%
+  inner_join(orders, by="order_id")%>%
+  inner_join(product.data, by="product_id")%>%
+  filter(product.category==c( "HEALTH BEAUTY"))%>%
+  select(order_purchase_timestamp)
+
+# sport leisure
+ordertime.sport.l=item.data%>%
+  inner_join(orders, by="order_id")%>%
+  inner_join(product.data, by="product_id")%>%
+  filter(product.category==c("sport leisure"))%>%
+  select(order_purchase_timestamp)
+
+# top 3 product
+ordertime.item=item.data%>%
+  inner_join(orders, by="order_id")%>%
+  inner_join(product.data, by="product_id")%>%
+  filter(product.category==c("sport leisure", "HEALTH BEAUTY", "bed table bath"))%>%
+  select(product.category, order_purchase_timestamp)
+```
+
+Then we extract the day from the purchase time
+```{r}
+
+ordertime.btb$order_purchase_timestamp=as.numeric(format(as.POSIXct(ordertime.btb$order_purchase_timestamp), "%d"))
+ordertime.btb.df=as.data.frame(table(ordertime.btb))
+
+ordertime.HB$order_purchase_timestamp=as.numeric(format(as.POSIXct(ordertime.HB$order_purchase_timestamp), "%d"))
+ordertime.HB.df=as.data.frame(table(ordertime.HB))
+
+ordertime.sport.l$order_purchase_timestamp=as.numeric(format(as.POSIXct(ordertime.sport.l$order_purchase_timestamp), "%d"))
+ordertime.sport.l.df=as.data.frame(table(ordertime.sport.l))
+
+ordertime.item$order_purchase_timestamp=as.numeric(format(as.POSIXct(ordertime.item$order_purchase_timestamp), "%d"))
+ordertime.item.df=as.data.frame(table(ordertime.item))
+```
+
+```{r, message=FALSE,warning=FALSE}
+ggplot(data=ordertime.item.df)+
+  geom_line(mapping=aes(x=as.numeric(order_purchase_timestamp), y=Freq), 
+            col="dark blue",
+            size=1.5)+
+  scale_x_continuous(breaks = seq(1,31, by=4))+ 
+  facet_wrap(~ product.category, ncol = 3)+
+  labs(x = "Day", y = "Frequency")
+```
+
+According to the data, most people are more likely to stop buying things from the top 3 product (bed table bath, health beauty, sport leisure) at the end of the month. Let us break down for each product:
+
+1. Bed table bath
+
+Customers often buy this product at 5th, around 12th, and the peak is at 24th. Company can make sure they stock a lot of bed table bath so people do not run out of the product.
+
+2. Health beauty
+
+The purchse for health beauty are fluctuative. And it went down at the end of the end of the month.
+
+3. sport leisure
+
+Customer behaviour for this product are quite stable.So make sure to promote it well throught the month
