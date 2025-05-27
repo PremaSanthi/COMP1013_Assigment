@@ -1,7 +1,8 @@
 ---
 title: "COMP1013_22176385_Assigment"
 output: word_document
-date: "2025-05-27"
+date: "2025-05-22"
+bibliography: biblio assigment comp1013.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -291,3 +292,5 @@ ggplot(data=payment.df)+
 The most frequent used payment method is credit card with around 70,000 transactions. This suggest that the customers strongly prefer using credit cards.It is more convenient because people do not need to worry the amount of cash they had at that moment[@kelton2025]. 
 
 According to EBANX[@ebanx], UPI is a payment system that was used in India. However, since this dataset is based in Brazil, we are afraid that there's a mislabeled in the dataset.
+
+# References
